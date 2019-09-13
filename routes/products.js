@@ -7,6 +7,7 @@ router.get('/', async (req, res, next) => {
     const allProduct = await produk.findAll()
     res.send(allProduct)
   } catch (error) {
+    console.log(error)
     res.send(error)
   }
 })
@@ -21,9 +22,9 @@ router.post('/', async (req, res) => {
 })
 router.put('/:id', async (req, res) => {
   try {
-    const {nama, kategori, merk} = req.body
-    const {id} = req.params
-    await produk.update({nama, kategori, merk, updatedAt: produk.sequelize.fn('NOW')},{where:{id}})
+    const { nama, kategori, merk } = req.body
+    const { id } = req.params
+    await produk.update({ nama, kategori, merk, updatedAt: produk.sequelize.fn('NOW') }, { where: { id } })
     res.send('data updated')
   } catch (error) {
     res.send(error)
@@ -31,8 +32,8 @@ router.put('/:id', async (req, res) => {
 })
 router.delete('/:id', async (req, res) => {
   try {
-    const {id} = req.params
-    await produk.destroy({where:{id}})
+    const { id } = req.params
+    await produk.destroy({ where: { id } })
     res.send('berhasil di hapus')
   } catch (error) {
     res.send(error)
