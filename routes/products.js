@@ -4,11 +4,43 @@ const produk = require('../models/produk')
 
 router.get('/', async (req, res, next) => {
   try {
-    const allProduct = await produk.findAll()
-    res.send(allProduct)
+    let allProduct = ''
+    const { kategori, merk, nama } = req.query
+    switch  (true) {
+      case (kategori === undefined && merk === undefined && nama === undefined):
+        allProduct = await produk.findAll()
+        return res.send(allProduct)
+      case (kategori !== undefined && merk === undefined && nama === undefined):
+        allProduct = await produk.findAll({ where: { kategori } })
+        return res.send(allProduct)
+      case (kategori === undefined && merk !== undefined && nama === undefined):
+        allProduct = await produk.findAll({ where: { merk } })
+        return res.send(allProduct)
+      case (kategori === undefined && merk === undefined && nama !== undefined):
+        allProduct = await produk.findAll({ where: { nama } })
+        return res.send(allProduct)
+      case (kategori !== undefined && merk !== undefined && nama === undefined):
+        allProduct = await produk.findAll({ where: { merk, nama } })
+        return res.send(allProduct)
+      case (kategori !== undefined && merk !== undefined && nama !== undefined):
+        allProduct = await produk.findAll({ where: { merk, nama, kategori } })
+        return res.send(allProduct)
+      default:
+        break
+    }
   } catch (error) {
     console.log(error)
     res.send(error)
+  }
+})
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const idProduct = await produk.findOne({ where: { id } })
+    idProduct !== null ? res.send(idProduct) : res.send({ msg: 'Data Tidak Ditemukan' })
+  } catch (error) {
+    res.send({ error: '404' })
+    console.log(error)
   }
 })
 router.post('/', async (req, res) => {
